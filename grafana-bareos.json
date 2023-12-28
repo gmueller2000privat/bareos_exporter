@@ -56,6 +56,8 @@
       },
       "id": 19,
       "panels": [],
+      "repeat": "instance",
+      "repeatDirection": "h",
       "targets": [
         {
           "datasource": {
@@ -65,7 +67,7 @@
           "refId": "A"
         }
       ],
-      "title": "Scheduler",
+      "title": "Scheduler - $instance",
       "type": "row"
     },
     {
@@ -213,7 +215,7 @@
             "uid": "prometheus"
           },
           "editorMode": "code",
-          "expr": "sum(bareos_last_job_status{status=\"C\", last_selector=\"last\", instance=~\"$instance\", client=~\"$clients\"})",
+          "expr": "sum(bareos_last_job_status{status=\"C\", last_selector=\"last\", instance=~\"$instance\", jobname=~\"$jobname\" })",
           "hide": false,
           "interval": "",
           "legendFormat": "Created jobs",
@@ -226,7 +228,7 @@
             "uid": "prometheus"
           },
           "editorMode": "code",
-          "expr": "sum(bareos_last_job_status{status=~\"R|L|l|a|i\", last_selector=\"last\", instance=~\"$instance\", client=~\"$clients\"})",
+          "expr": "sum(bareos_last_job_status{status=~\"R|L|l|a|i\", last_selector=\"last\", instance=~\"$instance\", jobname=~\"$jobname\"})",
           "hide": false,
           "interval": "",
           "legendFormat": "Running jobs",
@@ -239,7 +241,7 @@
             "uid": "prometheus"
           },
           "editorMode": "code",
-          "expr": "sum(bareos_last_job_status{status=~\"q|F|S|m|M|s|j|c|d|p\", last_selector=\"last\", instance=~\"$instance\", client=~\"$clients\"})",
+          "expr": "sum(bareos_last_job_status{status=~\"q|F|S|m|M|s|j|c|d|p\", last_selector=\"last\", instance=~\"$instance\"})",
           "hide": false,
           "interval": "",
           "legendFormat": "Waiting jobs",
@@ -398,7 +400,7 @@
             "uid": "prometheus"
           },
           "editorMode": "code",
-          "expr": "sum(bareos_last_job_status{status=~\"E|f\",last_selector=\"last\", instance=~\"$instance\", client=~\"$clients\", jobname=~\"$jobname\"}) by(jobname)",
+          "expr": "sum(bareos_last_job_status{status=~\"E|f\",last_selector=\"last\", instance=~\"$instance\", jobname=~\"$jobname\"}) by(jobname)",
           "interval": "",
           "legendFormat": "Errors {{ jobname }}",
           "range": true,
@@ -410,7 +412,7 @@
             "uid": "prometheus"
           },
           "editorMode": "code",
-          "expr": "sum(bareos_last_job_status{status=~ \"W|e\",last_selector=\"last\", instance=~\"$instance\", client=~\"$clients\"}) by (jobname)",
+          "expr": "sum(bareos_last_job_status{status=~ \"W|e\",last_selector=\"last\", instance=~\"$instance\", jobname=~\"$jobname\"}) by (jobname)",
           "interval": "",
           "legendFormat": "Warnings {{ jobname }}",
           "range": true,
@@ -547,7 +549,7 @@
             "uid": "prometheus"
           },
           "editorMode": "code",
-          "expr": "time() - max(bareos_last_job_start_unix_timestamp{jobname=~\"$jobname\",jobtype=\"B\", last_selector=\"last_successful\", client=~\"$clients\"}) by (jobname)  + 60*60",
+          "expr": "time() - max(bareos_last_job_start_unix_timestamp{jobname=~\"$jobname\",jobtype=\"B\", last_selector=\"last_successful\"}) by (jobname)  + 60*60",
           "hide": false,
           "interval": "",
           "legendFormat": "{{ backupjob }}",
@@ -578,10 +580,12 @@
         "h": 1,
         "w": 24,
         "x": 0,
-        "y": 10
+        "y": 20
       },
       "id": 17,
       "panels": [],
+      "repeat": "instance",
+      "repeatDirection": "h",
       "targets": [
         {
           "datasource": {
@@ -591,7 +595,7 @@
           "refId": "A"
         }
       ],
-      "title": "Stored data summary",
+      "title": "Stored data summary - $instance",
       "type": "row"
     },
     {
@@ -621,7 +625,7 @@
         "h": 9,
         "w": 12,
         "x": 0,
-        "y": 11
+        "y": 21
       },
       "id": 12,
       "interval": "",
@@ -658,7 +662,7 @@
           },
           "editorMode": "code",
           "exemplar": false,
-          "expr": "sum(bareos_bytes_saved{jobtype=\"B\", instance=~\"$instance\", client=~\"$clients\"}) by (client)",
+          "expr": "sum(bareos_bytes_saved{jobtype=\"B\", jobname=~\"$jobname\", instance=~\"$instance\"}) by (client)",
           "format": "time_series",
           "hide": false,
           "instant": true,
@@ -697,7 +701,7 @@
         "h": 9,
         "w": 12,
         "x": 12,
-        "y": 11
+        "y": 21
       },
       "id": 15,
       "interval": "",
@@ -733,7 +737,7 @@
           },
           "editorMode": "code",
           "exemplar": false,
-          "expr": "sum(bareos_files_saved{jobtype=\"B\", instance=~\"$instance\", client=~\"$clients\"}) by (client)",
+          "expr": "sum(bareos_files_saved{jobtype=\"B\", instance=~\"$instance\", jobname=~\"$jobname\"}) by (client)",
           "format": "time_series",
           "hide": false,
           "instant": true,
@@ -773,7 +777,7 @@
         "h": 9,
         "w": 12,
         "x": 0,
-        "y": 20
+        "y": 30
       },
       "id": 22,
       "interval": "",
@@ -810,7 +814,7 @@
           },
           "editorMode": "code",
           "exemplar": false,
-          "expr": "sum(bareos_bytes_saved{jobtype=\"B\", instance=~\"$instance\", client=~\"$clients\"}) by (jobname)",
+          "expr": "sum(bareos_bytes_saved{jobtype=\"B\", instance=~\"$instance\", jobname=~\"$jobname\"}) by (jobname)",
           "format": "time_series",
           "hide": false,
           "instant": true,
@@ -850,7 +854,7 @@
         "h": 9,
         "w": 12,
         "x": 12,
-        "y": 20
+        "y": 30
       },
       "id": 23,
       "interval": "",
@@ -887,7 +891,7 @@
           },
           "editorMode": "code",
           "exemplar": false,
-          "expr": "sum(bareos_files_saved{jobtype=\"B\", instance=~\"$instance\", client=~\"$clients\"}) by (jobname)",
+          "expr": "sum(bareos_files_saved{jobtype=\"B\", instance=~\"$instance\", jobname=~\"$jobname\"}) by (jobname)",
           "format": "time_series",
           "hide": false,
           "instant": true,
@@ -910,10 +914,12 @@
         "h": 1,
         "w": 24,
         "x": 0,
-        "y": 29
+        "y": 58
       },
       "id": 21,
       "panels": [],
+      "repeat": "instance",
+      "repeatDirection": "h",
       "targets": [
         {
           "datasource": {
@@ -923,7 +929,7 @@
           "refId": "A"
         }
       ],
-      "title": "Stored data details",
+      "title": "Stored data details - $instance",
       "type": "row"
     },
     {
@@ -1008,7 +1014,7 @@
         "h": 9,
         "w": 12,
         "x": 0,
-        "y": 30
+        "y": 59
       },
       "id": 6,
       "links": [],
@@ -1032,7 +1038,7 @@
             "uid": "prometheus"
           },
           "editorMode": "code",
-          "expr": "bareos_bytes_saved{jobname=~\"$jobname\", jobtype=\"B\", instance=~\"$instance\", client=~\"$clients\"} > 0",
+          "expr": "bareos_bytes_saved{jobname=~\"$jobname\", jobtype=\"B\", instance=~\"$instance\"} > 0",
           "hide": false,
           "interval": "",
           "intervalFactor": 1,
@@ -1046,7 +1052,7 @@
             "uid": "prometheus"
           },
           "editorMode": "code",
-          "expr": "bareos_files_saved{jobname=~\"$jobname\", jobtype=\"B\", instance=~\"$instance\", client=~\"$clients\"} > 0",
+          "expr": "bareos_files_saved{jobname=~\"$jobname\", jobtype=\"B\", instance=~\"$instance\"} > 0",
           "hide": false,
           "interval": "",
           "legendFormat": "Files {{ jobname }}",
@@ -1139,7 +1145,7 @@
         "h": 9,
         "w": 12,
         "x": 12,
-        "y": 30
+        "y": 59
       },
       "id": 7,
       "options": {
@@ -1162,7 +1168,7 @@
             "uid": "prometheus"
           },
           "editorMode": "code",
-          "expr": "bareos_last_job_bytes_saved{jobname=~\"$jobname\",jobtype=\"B\", last_selector=\"last_successful\", instance=~\"$instance\", client=~\"$clients\"}",
+          "expr": "bareos_last_job_bytes_saved{jobname=~\"$jobname\",jobtype=\"B\", last_selector=\"last_successful\", instance=~\"$instance\"}",
           "interval": "",
           "legendFormat": "Bytes {{ jobname }}",
           "range": true,
@@ -1174,7 +1180,7 @@
             "uid": "prometheus"
           },
           "editorMode": "code",
-          "expr": "bareos_last_job_files_saved{jobname=~\"$jobname\",jobtype=\"B\", last_selector=\"last_successful\", instance=~\"$instance\", client=~\"$clients\"}",
+          "expr": "bareos_last_job_files_saved{jobname=~\"$jobname\",jobtype=\"B\", last_selector=\"last_successful\", instance=~\"$instance\"}",
           "interval": "",
           "legendFormat": "Files {{ jobname }}",
           "range": true,
@@ -1266,7 +1272,7 @@
         "h": 9,
         "w": 12,
         "x": 0,
-        "y": 39
+        "y": 68
       },
       "id": 10,
       "options": {
@@ -1289,7 +1295,7 @@
             "uid": "prometheus"
           },
           "editorMode": "code",
-          "expr": "bareos_last_job_bytes_saved{jobname=~\"$jobname\", jobtype=\"B\", last_selector=\"last_successful_full\", instance=~\"$instance\", client=~\"$clients\"}",
+          "expr": "bareos_last_job_bytes_saved{jobname=~\"$jobname\", jobtype=\"B\", last_selector=\"last_successful_full\", instance=~\"$instance\"}",
           "interval": "",
           "legendFormat": "Bytes {{ jobname }}",
           "range": true,
@@ -1301,7 +1307,7 @@
             "uid": "prometheus"
           },
           "editorMode": "code",
-          "expr": "bareos_last_job_files_saved{jobname=~\"$jobname\", jobtype=\"B\", last_selector=\"last_successful_full\", instance=~\"$instance\", client=~\"$clients\"}",
+          "expr": "bareos_last_job_files_saved{jobname=~\"$jobname\", jobtype=\"B\", last_selector=\"last_successful_full\", instance=~\"$instance\"}",
           "interval": "",
           "legendFormat": "Files {{ jobname }}",
           "range": true,
@@ -1321,10 +1327,12 @@
         "h": 1,
         "w": 24,
         "x": 0,
-        "y": 48
+        "y": 96
       },
       "id": 25,
       "panels": [],
+      "repeat": "instance",
+      "repeatDirection": "h",
       "targets": [
         {
           "datasource": {
@@ -1334,7 +1342,7 @@
           "refId": "A"
         }
       ],
-      "title": "Storage Pools",
+      "title": "Storage Pools - $instance",
       "type": "row"
     },
     {
@@ -1410,7 +1418,7 @@
         "h": 8,
         "w": 8,
         "x": 0,
-        "y": 49
+        "y": 97
       },
       "id": 32,
       "links": [],
@@ -1517,7 +1525,7 @@
         "h": 8,
         "w": 16,
         "x": 8,
-        "y": 49
+        "y": 97
       },
       "id": 33,
       "links": [],
@@ -1617,7 +1625,7 @@
         "h": 8,
         "w": 12,
         "x": 0,
-        "y": 57
+        "y": 105
       },
       "id": 27,
       "options": {
@@ -1717,7 +1725,7 @@
         "h": 8,
         "w": 12,
         "x": 12,
-        "y": 57
+        "y": 105
       },
       "id": 28,
       "options": {
@@ -1742,7 +1750,7 @@
             "uid": "prometheus"
           },
           "editorMode": "code",
-          "expr": "sum(bareos_pool_bytes{prunable=\"true\"}) by(pool) + sum(bareos_pool_bytes{prunable=\"false\", expired=\"true\", instance=~\"$instance\"}) by (pool)",
+          "expr": "sum(bareos_pool_bytes{prunable=\"true\", instance=~\"$instance\"}) by(pool) + sum(bareos_pool_bytes{prunable=\"false\", expired=\"true\", instance=~\"$instance\"}) by (pool)",
           "interval": "",
           "legendFormat": "{{ pool }}",
           "queryType": "randomWalk",
@@ -1818,7 +1826,7 @@
         "h": 8,
         "w": 12,
         "x": 0,
-        "y": 65
+        "y": 113
       },
       "id": 29,
       "options": {
@@ -1919,7 +1927,7 @@
         "h": 8,
         "w": 12,
         "x": 12,
-        "y": 65
+        "y": 113
       },
       "id": 30,
       "options": {
@@ -1943,10 +1951,12 @@
             "type": "prometheus",
             "uid": "prometheus"
           },
-          "expr": "sum(bareos_pool_volumes{prunable=\"true\"}) by(pool) + sum(bareos_pool_volumes{prunable=\"false\", expired=\"true\"}) by (pool)",
+          "editorMode": "code",
+          "expr": "sum(bareos_pool_volumes{prunable=\"true\", instance=~\"$instance\"}) by(pool) + sum(bareos_pool_volumes{prunable=\"false\", expired=\"true\", instance=~\"$instance\"}) by (pool)",
           "interval": "",
           "legendFormat": "{{ pool }}",
           "queryType": "randomWalk",
+          "range": true,
           "refId": "A"
         }
       ],
@@ -1959,6 +1969,38 @@
   "tags": [],
   "templating": {
     "list": [
+      {
+        "current": {
+          "selected": true,
+          "text": [
+            "All"
+          ],
+          "value": [
+            "$__all"
+          ]
+        },
+        "datasource": {
+          "type": "prometheus",
+          "uid": "prometheus"
+        },
+        "definition": "label_values(bareos_last_job_bytes_saved,instance)",
+        "hide": 0,
+        "includeAll": true,
+        "label": "instance",
+        "multi": true,
+        "name": "instance",
+        "options": [],
+        "query": {
+          "qryType": 1,
+          "query": "label_values(bareos_last_job_bytes_saved,instance)",
+          "refId": "PrometheusVariableQueryEditor-VariableQuery"
+        },
+        "refresh": 1,
+        "regex": "",
+        "skipUrlSync": false,
+        "sort": 0,
+        "type": "query"
+      },
       {
         "current": {
           "selected": true,
@@ -2012,66 +2054,6 @@
         "skipUrlSync": false,
         "sort": 1,
         "type": "query"
-      },
-      {
-        "current": {
-          "selected": true,
-          "text": "2radbareos:9625",
-          "value": "2radbareos:9625"
-        },
-        "datasource": {
-          "type": "prometheus",
-          "uid": "prometheus"
-        },
-        "definition": "label_values(bareos_last_job_bytes_saved,instance)",
-        "hide": 0,
-        "includeAll": false,
-        "label": "instance",
-        "multi": false,
-        "name": "instance",
-        "options": [],
-        "query": {
-          "qryType": 1,
-          "query": "label_values(bareos_last_job_bytes_saved,instance)",
-          "refId": "PrometheusVariableQueryEditor-VariableQuery"
-        },
-        "refresh": 1,
-        "regex": "",
-        "skipUrlSync": false,
-        "sort": 0,
-        "type": "query"
-      },
-      {
-        "current": {
-          "selected": true,
-          "text": [
-            "All"
-          ],
-          "value": [
-            "$__all"
-          ]
-        },
-        "datasource": {
-          "type": "prometheus",
-          "uid": "prometheus"
-        },
-        "definition": "label_values(bareos_last_job_files_saved{instance=\"$instance\"},client)",
-        "hide": 0,
-        "includeAll": true,
-        "label": "clients",
-        "multi": true,
-        "name": "clients",
-        "options": [],
-        "query": {
-          "qryType": 1,
-          "query": "label_values(bareos_last_job_files_saved{instance=\"$instance\"},client)",
-          "refId": "PrometheusVariableQueryEditor-VariableQuery"
-        },
-        "refresh": 1,
-        "regex": "",
-        "skipUrlSync": false,
-        "sort": 0,
-        "type": "query"
       }
     ]
   },
@@ -2096,6 +2078,6 @@
   "timezone": "",
   "title": "Bareos Backups",
   "uid": "f6f12ae4-dc71-4ec6-8fd9-cc269517636d",
-  "version": 13,
+  "version": 23,
   "weekStart": ""
 }
