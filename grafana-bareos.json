@@ -549,7 +549,7 @@
             "uid": "prometheus"
           },
           "editorMode": "code",
-          "expr": "time() - max(bareos_last_job_start_unix_timestamp{jobname=~\"$jobname\",jobtype=\"B\", last_selector=\"last_successful\"}) by (jobname)  + 60*60",
+          "expr": "time() - max(bareos_last_job_start_unix_timestamp{jobname=~\"$jobname\",jobtype=\"B\", last_selector=\"last_successful\", instance=~\"$instance\"}) by (jobname)  + 60*60",
           "hide": false,
           "interval": "",
           "legendFormat": "{{ backupjob }}",
@@ -2005,36 +2005,10 @@
         "current": {
           "selected": true,
           "text": [
-            "BackupCatalog",
-            "argon1",
-            "backup-bareos-fd",
-            "backup-dc-srv01-fd",
-            "backup-gm-fd",
-            "backup-mail-fd",
-            "backup-rd-srv01-fd",
-            "backup-vkasse-fd",
-            "backup-winad-fd",
-            "desk1",
-            "kmaster",
-            "mailrelay",
-            "rothsee-new",
-            "vereinsheim"
+            "All"
           ],
           "value": [
-            "BackupCatalog",
-            "argon1",
-            "backup-bareos-fd",
-            "backup-dc-srv01-fd",
-            "backup-gm-fd",
-            "backup-mail-fd",
-            "backup-rd-srv01-fd",
-            "backup-vkasse-fd",
-            "backup-winad-fd",
-            "desk1",
-            "kmaster",
-            "mailrelay",
-            "rothsee-new",
-            "vereinsheim"
+            "$__all"
           ]
         },
         "datasource": {
@@ -2078,6 +2052,6 @@
   "timezone": "",
   "title": "Bareos Backups",
   "uid": "f6f12ae4-dc71-4ec6-8fd9-cc269517636d",
-  "version": 23,
+  "version": 25,
   "weekStart": ""
 }
