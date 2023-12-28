@@ -6,7 +6,7 @@ type JobType string
 
 type JobLookup struct {
 	JobName     string
-	clientId    int
+	clientId    int64
 	FileSetName string
 }
 
@@ -17,17 +17,17 @@ type JobInfo struct {
 	JobName    string
 	ClientName string
 
-	TotalCount int
-	TotalBytes int
-	TotalFiles int
+	TotalCount int64
+	TotalBytes int64
+	TotalFiles int64
 }
 
 // LastJob models query results for job metrics
 type LastJob struct {
 	JobStatus    string
-	JobBytes     int
-	JobFiles     int
-	JobErrors    int
+	JobBytes     int64
+	JobFiles     int64
+	JobErrors    int64
 	JobStartDate time.Time
 	JobEndDate   time.Time
 }
@@ -35,8 +35,8 @@ type LastJob struct {
 // PoolInfo models query result of pool information
 type PoolInfo struct {
 	Name     string
-	Volumes  int
-	Bytes    int
+	Volumes  int64
+	Bytes    int64
 	Prunable bool
 	Expired  bool
 }
