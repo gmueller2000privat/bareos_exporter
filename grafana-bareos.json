@@ -179,41 +179,12 @@
               {
                 "color": "transparent",
                 "value": null
-              },
-              {
-                "color": "red",
-                "value": 1
               }
             ]
           },
           "unit": "short"
         },
-        "overrides": [
-          {
-            "__systemRef": "hideSeriesFrom",
-            "matcher": {
-              "id": "byNames",
-              "options": {
-                "mode": "exclude",
-                "names": [
-                  "Waiting jobs"
-                ],
-                "prefix": "All except:",
-                "readOnly": true
-              }
-            },
-            "properties": [
-              {
-                "id": "custom.hideFrom",
-                "value": {
-                  "legend": false,
-                  "tooltip": false,
-                  "viz": true
-                }
-              }
-            ]
-          }
-        ]
+        "overrides": []
       },
       "gridPos": {
         "h": 9,
@@ -243,6 +214,7 @@
           },
           "editorMode": "code",
           "expr": "sum(bareos_last_job_status{status=\"C\", last_selector=\"last\", instance=~\"$instance\", client=~\"$clients\"})",
+          "hide": false,
           "interval": "",
           "legendFormat": "Created jobs",
           "range": true,
@@ -255,6 +227,7 @@
           },
           "editorMode": "code",
           "expr": "sum(bareos_last_job_status{status=~\"R|L|l|a|i\", last_selector=\"last\", instance=~\"$instance\", client=~\"$clients\"})",
+          "hide": false,
           "interval": "",
           "legendFormat": "Running jobs",
           "range": true,
@@ -266,7 +239,8 @@
             "uid": "prometheus"
           },
           "editorMode": "code",
-          "expr": "sum(bareos_last_job_status{status=~\"q|F|S|m|M|s|j|c|d|p\", last_selector=\"last\", instance=~\"$instance\"})",
+          "expr": "sum(bareos_last_job_status{status=~\"q|F|S|m|M|s|j|c|d|p\", last_selector=\"last\", instance=~\"$instance\", client=~\"$clients\"})",
+          "hide": false,
           "interval": "",
           "legendFormat": "Waiting jobs",
           "range": true,
@@ -389,10 +363,6 @@
               {
                 "color": "transparent",
                 "value": null
-              },
-              {
-                "color": "red",
-                "value": 0
               }
             ]
           },
@@ -428,7 +398,7 @@
             "uid": "prometheus"
           },
           "editorMode": "code",
-          "expr": "sum(bareos_last_job_status{status=~\"E|f\",last_selector=\"last\", instance=~\"$instance\", client=~\"$clients\"}) by(jobname)",
+          "expr": "sum(bareos_last_job_status{status=~\"E|f\",last_selector=\"last\", instance=~\"$instance\", client=~\"$clients\", jobname=~\"$jobname\"}) by(jobname)",
           "interval": "",
           "legendFormat": "Errors {{ jobname }}",
           "range": true,
@@ -571,19 +541,6 @@
       },
       "pluginVersion": "10.2.2",
       "targets": [
-        {
-          "datasource": {
-            "type": "prometheus",
-            "uid": "prometheus"
-          },
-          "editorMode": "code",
-          "expr": "time() - max(bareos_last_job_start_unix_timestamp{jobtype=\"B\", last_selector=\"last_successful\", client=~\"$clients\"}) by (jobname) + 60*60",
-          "hide": true,
-          "interval": "",
-          "legendFormat": "{{ backupjob }}",
-          "range": true,
-          "refId": "A"
-        },
         {
           "datasource": {
             "type": "prometheus",
@@ -2004,12 +1961,38 @@
     "list": [
       {
         "current": {
-          "selected": false,
+          "selected": true,
           "text": [
-            "All"
+            "BackupCatalog",
+            "argon1",
+            "backup-bareos-fd",
+            "backup-dc-srv01-fd",
+            "backup-gm-fd",
+            "backup-mail-fd",
+            "backup-rd-srv01-fd",
+            "backup-vkasse-fd",
+            "backup-winad-fd",
+            "desk1",
+            "kmaster",
+            "mailrelay",
+            "rothsee-new",
+            "vereinsheim"
           ],
           "value": [
-            "$__all"
+            "BackupCatalog",
+            "argon1",
+            "backup-bareos-fd",
+            "backup-dc-srv01-fd",
+            "backup-gm-fd",
+            "backup-mail-fd",
+            "backup-rd-srv01-fd",
+            "backup-vkasse-fd",
+            "backup-winad-fd",
+            "desk1",
+            "kmaster",
+            "mailrelay",
+            "rothsee-new",
+            "vereinsheim"
           ]
         },
         "datasource": {
@@ -2068,6 +2051,10 @@
             "$__all"
           ]
         },
+        "datasource": {
+          "type": "prometheus",
+          "uid": "prometheus"
+        },
         "definition": "label_values(bareos_last_job_files_saved{instance=\"$instance\"},client)",
         "hide": 0,
         "includeAll": true,
@@ -2109,6 +2096,6 @@
   "timezone": "",
   "title": "Bareos Backups",
   "uid": "f6f12ae4-dc71-4ec6-8fd9-cc269517636d",
-  "version": 9,
+  "version": 13,
   "weekStart": ""
 }
