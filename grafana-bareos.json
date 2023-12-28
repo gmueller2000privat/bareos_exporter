@@ -1586,7 +1586,7 @@
             "uid": "prometheus"
           },
           "editorMode": "code",
-          "expr": "1 - (bareos_pool_bytes{expired=\"false\", prunable=\"false\", instance=~\"$instance\"} / on(pool) sum(bareos_pool_bytes) by(pool))",
+          "expr": "1 - (bareos_pool_bytes{expired=\"false\", prunable=\"false\", instance=~\"$instance\"} / on(pool) sum(bareos_pool_bytes{instance=~\"$instance\"}) by(pool))",
           "interval": "",
           "legendFormat": "{{ pool }}",
           "range": true,
@@ -2033,8 +2033,8 @@
       {
         "current": {
           "selected": true,
-          "text": "192.168.178.66:9625",
-          "value": "192.168.178.66:9625"
+          "text": "2radbareos:9625",
+          "value": "2radbareos:9625"
         },
         "datasource": {
           "type": "prometheus",
@@ -2109,6 +2109,6 @@
   "timezone": "",
   "title": "Bareos Backups",
   "uid": "f6f12ae4-dc71-4ec6-8fd9-cc269517636d",
-  "version": 8,
+  "version": 9,
   "weekStart": ""
 }
