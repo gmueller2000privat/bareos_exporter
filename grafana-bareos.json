@@ -1181,13 +1181,14 @@
           },
           "editorMode": "code",
           "expr": "bareos_last_job_files_saved{jobname=~\"$jobname\",jobtype=\"B\", last_selector=\"last_successful\", instance=~\"$instance\"}",
+          "hide": true,
           "interval": "",
           "legendFormat": "Files {{ jobname }}",
           "range": true,
           "refId": "D"
         }
       ],
-      "title": "Backed up data",
+      "title": "Backed up data ",
       "type": "timeseries"
     },
     {
@@ -1315,6 +1316,134 @@
         }
       ],
       "title": "Backed up data (last full backup)",
+      "type": "timeseries"
+    },
+    {
+      "datasource": {
+        "type": "prometheus",
+        "uid": "prometheus"
+      },
+      "fieldConfig": {
+        "defaults": {
+          "color": {
+            "mode": "palette-classic"
+          },
+          "custom": {
+            "axisBorderShow": false,
+            "axisCenteredZero": false,
+            "axisColorMode": "text",
+            "axisLabel": "Size",
+            "axisPlacement": "auto",
+            "barAlignment": 0,
+            "drawStyle": "line",
+            "fillOpacity": 10,
+            "gradientMode": "none",
+            "hideFrom": {
+              "legend": false,
+              "tooltip": false,
+              "viz": false
+            },
+            "insertNulls": false,
+            "lineInterpolation": "linear",
+            "lineWidth": 1,
+            "pointSize": 5,
+            "scaleDistribution": {
+              "type": "linear"
+            },
+            "showPoints": "never",
+            "spanNulls": true,
+            "stacking": {
+              "group": "A",
+              "mode": "none"
+            },
+            "thresholdsStyle": {
+              "mode": "off"
+            }
+          },
+          "links": [],
+          "mappings": [],
+          "thresholds": {
+            "mode": "absolute",
+            "steps": [
+              {
+                "color": "green",
+                "value": null
+              },
+              {
+                "color": "red",
+                "value": 80
+              }
+            ]
+          },
+          "unit": "bytes"
+        },
+        "overrides": [
+          {
+            "matcher": {
+              "id": "byRegexp",
+              "options": "/^Files/"
+            },
+            "properties": [
+              {
+                "id": "unit",
+                "value": "short"
+              },
+              {
+                "id": "custom.axisLabel",
+                "value": "Files"
+              }
+            ]
+          }
+        ]
+      },
+      "gridPos": {
+        "h": 9,
+        "w": 12,
+        "x": 12,
+        "y": 68
+      },
+      "id": 54,
+      "options": {
+        "legend": {
+          "calcs": [],
+          "displayMode": "list",
+          "placement": "bottom",
+          "showLegend": true
+        },
+        "tooltip": {
+          "mode": "multi",
+          "sort": "none"
+        }
+      },
+      "pluginVersion": "10.2.2",
+      "targets": [
+        {
+          "datasource": {
+            "type": "prometheus",
+            "uid": "prometheus"
+          },
+          "editorMode": "code",
+          "expr": "bareos_last_job_bytes_saved{jobname=~\"$jobname\",jobtype=\"B\", last_selector=\"last_successful\", instance=~\"$instance\"}",
+          "hide": true,
+          "interval": "",
+          "legendFormat": "Bytes {{ jobname }}",
+          "range": true,
+          "refId": "A"
+        },
+        {
+          "datasource": {
+            "type": "prometheus",
+            "uid": "prometheus"
+          },
+          "editorMode": "code",
+          "expr": "bareos_last_job_files_saved{jobname=~\"$jobname\",jobtype=\"B\", last_selector=\"last_successful\", instance=~\"$instance\"}",
+          "interval": "",
+          "legendFormat": "Files {{ jobname }}",
+          "range": true,
+          "refId": "D"
+        }
+      ],
+      "title": "Backed up data - files",
       "type": "timeseries"
     },
     {
@@ -1504,8 +1633,7 @@
             "mode": "absolute",
             "steps": [
               {
-                "color": "green",
-                "value": null
+                "color": "green"
               },
               {
                 "color": "#EAB839",
@@ -1608,8 +1736,7 @@
             "mode": "absolute",
             "steps": [
               {
-                "color": "green",
-                "value": null
+                "color": "green"
               },
               {
                 "color": "red",
@@ -1708,8 +1835,7 @@
             "mode": "absolute",
             "steps": [
               {
-                "color": "green",
-                "value": null
+                "color": "green"
               },
               {
                 "color": "red",
@@ -1809,8 +1935,7 @@
             "mode": "absolute",
             "steps": [
               {
-                "color": "green",
-                "value": null
+                "color": "green"
               },
               {
                 "color": "red",
@@ -1910,8 +2035,7 @@
             "mode": "absolute",
             "steps": [
               {
-                "color": "green",
-                "value": null
+                "color": "green"
               },
               {
                 "color": "red",
@@ -1971,7 +2095,7 @@
     "list": [
       {
         "current": {
-          "selected": true,
+          "selected": false,
           "text": [
             "All"
           ],
@@ -2003,12 +2127,36 @@
       },
       {
         "current": {
-          "selected": true,
+          "selected": false,
           "text": [
-            "All"
+            "BackupCatalog",
+            "argon1",
+            "backup-dc-srv01-fd",
+            "backup-gm-fd",
+            "backup-mail-fd",
+            "backup-rd-srv01-fd",
+            "backup-vkasse-fd",
+            "backup-winad-fd",
+            "desk1",
+            "kmaster",
+            "mailrelay",
+            "rothsee-new",
+            "vereinsheim"
           ],
           "value": [
-            "$__all"
+            "BackupCatalog",
+            "argon1",
+            "backup-dc-srv01-fd",
+            "backup-gm-fd",
+            "backup-mail-fd",
+            "backup-rd-srv01-fd",
+            "backup-vkasse-fd",
+            "backup-winad-fd",
+            "desk1",
+            "kmaster",
+            "mailrelay",
+            "rothsee-new",
+            "vereinsheim"
           ]
         },
         "datasource": {
@@ -2052,6 +2200,6 @@
   "timezone": "",
   "title": "Bareos Backups",
   "uid": "f6f12ae4-dc71-4ec6-8fd9-cc269517636d",
-  "version": 25,
+  "version": 26,
   "weekStart": ""
 }
