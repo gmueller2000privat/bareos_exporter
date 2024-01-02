@@ -514,7 +514,7 @@
               },
               {
                 "color": "red",
-                "value": 100000
+                "value": 172800
               }
             ]
           },
@@ -558,16 +558,7 @@
         }
       ],
       "title": "Time since last scheduled backup",
-      "transformations": [
-        {
-          "id": "filterFieldsByName",
-          "options": {
-            "include": {
-              "names": []
-            }
-          }
-        }
-      ],
+      "transformations": [],
       "type": "timeseries"
     },
     {
@@ -2180,7 +2171,7 @@
     ]
   },
   "time": {
-    "from": "now-1d",
+    "from": "now-7d",
     "to": "now"
   },
   "timepicker": {
@@ -2200,6 +2191,6 @@
   "timezone": "",
   "title": "Bareos Backups",
   "uid": "f6f12ae4-dc71-4ec6-8fd9-cc269517636d",
-  "version": 26,
+  "version": 27,
   "weekStart": ""
 }
