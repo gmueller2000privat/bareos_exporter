@@ -27,17 +27,17 @@ type sqlQueries struct {
 var queries map[string]*sqlQueries = map[string]*sqlQueries{
 	"mysql": {
 		JobList:               "SELECT j.Name, j.Type, j.ClientId, COALESCE(c.Name, ''), COALESCE(f.FileSet, ''), COUNT(*), SUM(j.JobBytes), SUM(j.JobFiles) FROM Job j LEFT JOIN Client c ON c.ClientId = j.ClientId LEFT JOIN FileSet f ON f.FileSetId = j.FileSetId GROUP BY j.Name, j.Type, j.ClientId, c.Name, f.FileSet HAVING MAX(j.SchedTime) >= ?",
-		LastJob:               "SELECT JobStatus,JobBytes,JobFiles,JobErrors,StartTime,COALESCE(EndTime, NOW()) FROM Job WHERE Name = ? AND ClientId = ? AND FileSetId IN(SELECT f.FileSetId FROM FileSet f WHERE f.FileSet = ?) ORDER BY StartTime DESC LIMIT 1",
-		LastSuccessfulJob:     "SELECT JobStatus,JobBytes,JobFiles,JobErrors,StartTime,COALESCE(EndTime, NOW()) FROM Job WHERE Name = ? AND ClientId = ? AND FileSetId IN(SELECT f.FileSetId FROM FileSet f WHERE f.FileSet = ?) AND JobStatus IN('T', 'W') ORDER BY StartTime DESC LIMIT 1",
-		LastSuccessfulFullJob: "SELECT JobStatus,JobBytes,JobFiles,JobErrors,StartTime,COALESCE(EndTime, NOW()) FROM Job WHERE Name = ? AND ClientId = ? AND FileSetId IN(SELECT f.FileSetId FROM FileSet f WHERE f.FileSet = ?) AND JobStatus IN('T', 'W') AND Level = 'F' ORDER BY StartTime DESC LIMIT 1",
+		LastJob:               "SELECT JobID, JobStatus,JobBytes,JobFiles,JobErrors,StartTime,COALESCE(EndTime, NOW()) FROM Job WHERE Name = ? AND ClientId = ? AND Type = ? AND FileSetId IN(SELECT f.FileSetId FROM FileSet f WHERE f.FileSet = ?) ORDER BY StartTime DESC LIMIT 1",
+		LastSuccessfulJob:     "SELECT JobID, JobStatus,JobBytes,JobFiles,JobErrors,StartTime,COALESCE(EndTime, NOW()) FROM Job WHERE Name = ? AND ClientId = ? AND Type = ? AND FileSetId IN(SELECT f.FileSetId FROM FileSet f WHERE f.FileSet = ?) AND JobStatus IN('T', 'W') ORDER BY StartTime DESC LIMIT 1",
+		LastSuccessfulFullJob: "SELECT JobID, JobStatus,JobBytes,JobFiles,JobErrors,StartTime,COALESCE(EndTime, NOW()) FROM Job WHERE Name = ? AND ClientId = ? AND Type = ? AND FileSetId IN(SELECT f.FileSetId FROM FileSet f WHERE f.FileSet = ?) AND JobStatus IN('T', 'W') AND Level = 'F' ORDER BY StartTime DESC LIMIT 1",
 		PoolInfo:              "SELECT p.name, sum(m.volbytes) AS bytes, count(*) AS volumes, CASE WHEN m.mediaid NOT IN (SELECT DISTINCT MediaId FROM JobMedia) THEN 1 ELSE 0 END AS prunable, COALESCE(TIMESTAMPADD(SECOND, m.volretention, m.lastwritten) < NOW(), false) AS expired FROM Media m LEFT JOIN Pool p ON m.poolid = p.poolid GROUP BY p.name, prunable, expired",
 		JobStates:             "SELECT JobStatus FROM Status",
 	},
 	"pgx": {
 		JobList:               "SELECT j.Name, j.Type, j.ClientId, COALESCE(c.Name, ''), COALESCE(f.FileSet, ''), COUNT(*), SUM(j.JobBytes), SUM(j.JobFiles) FROM job j LEFT JOIN client c ON c.ClientId = j.ClientId LEFT JOIN fileset f ON f.FileSetId = j.FileSetId  GROUP BY j.Name, j.Type, j.ClientId, c.Name, f.FileSet HAVING MAX(j.SchedTime) >= $1",
-		LastJob:               "SELECT JobStatus,JobBytes,JobFiles,JobErrors,StartTime::timestamptz,COALESCE(EndTime::timestamptz, NOW()) FROM job WHERE Name = $1 AND ClientId = $2 AND FileSetId IN(SELECT f.FileSetId from FileSet f WHERE f.FileSet = $3) ORDER BY StartTime DESC LIMIT 1",
-		LastSuccessfulJob:     "SELECT JobStatus,JobBytes,JobFiles,JobErrors,StartTime::timestamptz,COALESCE(EndTime::timestamptz, NOW()) FROM job WHERE Name = $1 AND ClientId = $2 AND FileSetId IN(SELECT f.FileSetId from FileSet f WHERE f.FileSet = $3) AND JobStatus IN('T', 'W') ORDER BY StartTime DESC LIMIT 1",
-		LastSuccessfulFullJob: "SELECT JobStatus,JobBytes,JobFiles,JobErrors,StartTime::timestamptz,COALESCE(EndTime::timestamptz, NOW()) FROM job WHERE Name = $1 AND ClientId = $2 AND FileSetId IN(SELECT f.FileSetId from FileSet f WHERE f.FileSet = $3) AND JobStatus IN('T', 'W') AND Level = 'F' ORDER BY StartTime DESC LIMIT 1",
+		LastJob:               "SELECT JobID, JobStatus,JobBytes,JobFiles,JobErrors,StartTime::timestamptz,COALESCE(EndTime::timestamptz, NOW()) FROM job WHERE Name = $1 AND ClientId = $2 AND Type = $3 AND FileSetId IN(SELECT f.FileSetId from FileSet f WHERE f.FileSet = $4) ORDER BY StartTime DESC LIMIT 1",
+		LastSuccessfulJob:     "SELECT JobID, JobStatus,JobBytes,JobFiles,JobErrors,StartTime::timestamptz,COALESCE(EndTime::timestamptz, NOW()) FROM job WHERE Name = $1 AND ClientId = $2 AND Type = $3 AND FileSetId IN(SELECT f.FileSetId from FileSet f WHERE f.FileSet = $4) AND JobStatus IN('T', 'W') ORDER BY StartTime DESC LIMIT 1",
+		LastSuccessfulFullJob: "SELECT JobID, JobStatus,JobBytes,JobFiles,JobErrors,StartTime::timestamptz,COALESCE(EndTime::timestamptz, NOW()) FROM job WHERE Name = $1 AND ClientId = $2 AND Type = $3 AND FileSetId IN(SELECT f.FileSetId from FileSet f WHERE f.FileSet = $4) AND JobStatus IN('T', 'W') AND Level = 'F' ORDER BY StartTime DESC LIMIT 1",
 		PoolInfo:              "SELECT p.name, sum(m.volbytes) AS bytes, count(m) AS volumes, (not exists(select * from jobmedia jm where jm.mediaid = m.mediaid)) AS prunable, COALESCE((m.lastwritten + (m.volretention * interval '1s')) < NOW(), false) as expired FROM media m LEFT JOIN pool p ON m.poolid = p.poolid GROUP BY p.name, prunable, expired",
 		JobStates:             "SELECT JobStatus FROM status",
 	},
@@ -105,7 +105,7 @@ func (connection Connection) execQuery(query string, args ...interface{}) (*sql.
 }
 
 func (connection Connection) execJobLookupQuery(query string, lookup *JobInfo) (*sql.Rows, error) {
-	return connection.execQuery(query, lookup.JobName, lookup.clientId, lookup.FileSetName)
+	return connection.execQuery(query, lookup.JobName, lookup.clientId, lookup.JobType, lookup.FileSetName)
 }
 
 func (connection Connection) execLastJobLookupQuery(query string, lookup *JobInfo) (*LastJob, error) {
@@ -117,7 +117,7 @@ func (connection Connection) execLastJobLookupQuery(query string, lookup *JobInf
 
 	var lastJob LastJob
 	if results.Next() {
-		err = results.Scan(&lastJob.JobStatus, &lastJob.JobBytes, &lastJob.JobFiles, &lastJob.JobErrors, &lastJob.JobStartDate, &lastJob.JobEndDate)
+		err = results.Scan(&lastJob.JobID, &lastJob.JobStatus, &lastJob.JobBytes, &lastJob.JobFiles, &lastJob.JobErrors, &lastJob.JobStartDate, &lastJob.JobEndDate)
 	}
 
 	return &lastJob, err
