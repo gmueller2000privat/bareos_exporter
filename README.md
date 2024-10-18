@@ -49,6 +49,7 @@ Metrics:
 * `bareos_last_job_start_unix_timestamp`: Timestamp of the start time of the latest job
 * `bareos_last_job_end_unix_timestamp`: Timestamp of the end time of the latest job
 * `bareos_last_job_status`: Current status of the latest job. This is a binary metric (0 or 1) The value will be 1 only for the `status` label that currently applies for the job
+* `bareos_last_job_id`: ID of the last job (per last_selector)
 
 Labels:
 

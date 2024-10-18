@@ -17,6 +17,7 @@ type bareosMetrics struct {
 	LastJobStartTimestamp *prometheus.Desc
 	LastJobEndTimestamp   *prometheus.Desc
 	LastJobStatus         *prometheus.Desc
+	LastJobID             *prometheus.Desc
 
 	PoolBytes   *prometheus.Desc
 	PoolVolumes *prometheus.Desc
@@ -85,6 +86,10 @@ func bareosCollector(conn *Connection) *bareosMetrics {
 			"Status of the last job",
 			jobInfoAndWhichLabelNames.newAppend("status"), nil,
 		),
+		LastJobID: prometheus.NewDesc("bareos_last_job_id",
+			"ID of the last job",
+			jobInfoAndWhichLabelNames, nil,
+		),
 		PoolBytes: prometheus.NewDesc("bareos_pool_bytes",
 			"Total bytes saved in a pool",
 			poolInfoLabelNames, nil,
@@ -108,6 +113,7 @@ func (collector *bareosMetrics) Describe(ch chan<- *prometheus.Desc) {
 	ch <- collector.LastJobStartTimestamp
 	ch <- collector.LastJobEndTimestamp
 	ch <- collector.LastJobStatus
+	ch <- collector.LastJobID
 
 	ch <- collector.PoolBytes
 	ch <- collector.PoolVolumes
@@ -185,6 +191,7 @@ func (collector *bareosMetrics) collectLastJob(ch chan<- prometheus.Metric, jobI
 	ch <- prometheus.MustNewConstMetric(collector.LastJobErrors, prometheus.CounterValue, float64(lastJob.JobErrors), labels...)
 	ch <- prometheus.MustNewConstMetric(collector.LastJobStartTimestamp, prometheus.CounterValue, float64(lastJob.JobStartDate.Unix()), labels...)
 	ch <- prometheus.MustNewConstMetric(collector.LastJobEndTimestamp, prometheus.CounterValue, float64(lastJob.JobEndDate.Unix()), labels...)
+	ch <- prometheus.MustNewConstMetric(collector.LastJobID, prometheus.CounterValue, float64(lastJob.JobID), labels...)
 
 	var bareosTerminationStates, bareosTerminationStatesErr = collector.connection.JobStates()
 

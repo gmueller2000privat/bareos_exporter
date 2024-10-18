@@ -24,6 +24,7 @@ type JobInfo struct {
 
 // LastJob models query results for job metrics
 type LastJob struct {
+	JobID        uint64
 	JobStatus    string
 	JobBytes     int64
 	JobFiles     int64
