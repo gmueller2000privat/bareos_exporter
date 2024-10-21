@@ -2117,38 +2117,11 @@
         "type": "query"
       },
       {
+        "allValue": ".*",
         "current": {
           "selected": false,
-          "text": [
-            "BackupCatalog",
-            "argon1",
-            "backup-dc-srv01-fd",
-            "backup-gm-fd",
-            "backup-mail-fd",
-            "backup-rd-srv01-fd",
-            "backup-vkasse-fd",
-            "backup-winad-fd",
-            "desk1",
-            "kmaster",
-            "mailrelay",
-            "rothsee-new",
-            "vereinsheim"
-          ],
-          "value": [
-            "BackupCatalog",
-            "argon1",
-            "backup-dc-srv01-fd",
-            "backup-gm-fd",
-            "backup-mail-fd",
-            "backup-rd-srv01-fd",
-            "backup-vkasse-fd",
-            "backup-winad-fd",
-            "desk1",
-            "kmaster",
-            "mailrelay",
-            "rothsee-new",
-            "vereinsheim"
-          ]
+          "text": "All",
+          "value": "$__all"
         },
         "datasource": {
           "type": "prometheus",
